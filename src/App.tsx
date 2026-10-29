@@ -5,8 +5,21 @@ import Oasis from "./assets/oasisLogoBlack.png";
 import Door from "./assets/door1.png";
 import DoorLeft from "./assets/doorleft.png";
 import DoorRight from "./assets/doorright.png";
+// import TopRight from "./assets/topright.png";
+// import LeftBottom from "./assets/bottomleft1.png";
 import GlimmerImg from "./assets/glimmer.png"; // <- the image that shines through
 import Band from "./assets/band.png";
+
+// Team photos (same files as the Contact page). Copy that folder to
+// src/assets/contact/ in this project, or change the paths below.
+import sneha from "/photos/snehaSrivastava1.jpeg";
+import avyakt from "/photos/avyaktVerma.webp";
+import praful from "/photos/prafulMalik.jpg";
+import shreyas from "/photos/shreyasAnand.webp";
+import prithvi from "/photos/prithviGowda.webp";
+import devansh from "/photos/devanshAgarwal.jpg";
+import pulkit from "/photos/pulkitBhardwaj.webp";
+import kushal from "/photos/kushalPoosala.jpeg";
 
 type Person = {
   first: string;
@@ -15,17 +28,17 @@ type Person = {
   photo: string;
 };
 
-// Put the photos in  public/photos/1.jpg ... 8.jpg  (or change the paths here).
+// Taken from the Contact page's CONTACTS list, in the same order.
 // 1st entry = key "1", 2nd = key "2", ...
 const PEOPLE: Person[] = [
-  { first: "Sneha", last: "Srivastava", dept: "Department of Art, Design, and Publicity", photo: "/photos/1.jpg" },
-  { first: "Person", last: "Two", dept: "Department of Events", photo: "/photos/2.jpg" },
-  { first: "Person", last: "Three", dept: "Department of Sponsorship", photo: "/photos/3.jpg" },
-  { first: "Person", last: "Four", dept: "Department of Marketing", photo: "/photos/4.jpg" },
-  { first: "Person", last: "Five", dept: "Department of Operations", photo: "/photos/5.jpg" },
-  { first: "Person", last: "Six", dept: "Department of Hospitality", photo: "/photos/6.jpg" },
-  { first: "Person", last: "Seven", dept: "Department of Technical Affairs", photo: "/photos/7.jpg" },
-  { first: "Person", last: "Eight", dept: "Department of Public Relations", photo: "/photos/8.jpg" },
+  { first: "Sneha", last: "Srivastava", dept: "Department of Publication and Correspondence", photo: sneha },
+  { first: "Avyakt", last: "Verma", dept: "Department of Visual Media", photo: avyakt },
+  { first: "Praful", last: "Malik", dept: "Department of Sponsorships and Company Collaborations", photo: praful },
+  { first: "Shreyas", last: "Anand", dept: "Department of Controls", photo: shreyas },
+  { first: "Prithvi", last: "Gowda C", dept: "Department of Reception and Accommodation", photo: prithvi },
+  { first: "Devansh", last: "Agarwal", dept: "Department of Art, Design and Publicity", photo: devansh },
+  { first: "Pulkit", last: "Bhardwaj", dept: "President, Students' Union", photo: pulkit },
+  { first: "Kushal", last: "Poosala", dept: "General Secretary, Students' Union", photo: kushal },
 ];
 
 // shrink long words so they never run past the right edge
@@ -118,23 +131,25 @@ function Scatter({ id, text, className, style }: ScatterProps) {
   );
 }
 
+// every shimmer uses this same radius (in vmax) so they all match
+const GLIMMER_RADIUS = 10;
+
 type Spot = {
   id: number;
   x: number; // % across the screen
   y: number; // % down the screen
-  r: number; // radius of the lit patch, in vmax
   dur: number; // seconds the glimmer lasts
   peak: number; // brightest opacity it reaches
+  bx: number; // which part of the pattern is lit (random offset, %)
+  by: number;
 };
 
 /* One glimmer: at a random place a small, soft patch of the image fades in
    and out, then waits a random time and shows up somewhere else. */
 function GlimmerSpot({ src, firstDelay }: { src: string; firstDelay: number }) {
-  const reduce = useReducedMotion() ?? false;
   const [spot, setSpot] = useState<Spot | null>(null);
 
   useEffect(() => {
-    if (reduce) return;
     let timer = 0;
     let n = 0;
 
@@ -143,26 +158,27 @@ function GlimmerSpot({ src, firstDelay }: { src: string; firstDelay: number }) {
         id: n++,
         x: rand(6, 94),
         y: rand(6, 94),
-        r: rand(8, 15),
-        dur: rand(2, 3.4),
-        peak: rand(0.3, 0.6),
+        dur: rand(3.5, 6), // slow fade in and out
+        peak: rand(0.3, 0.65), // never fully bright
+        bx: rand(0, 100),
+        by: rand(0, 100),
       };
       setSpot(s);
       timer = window.setTimeout(hide, s.dur * 1000);
     };
     const hide = () => {
       setSpot(null);
-      timer = window.setTimeout(show, rand(500, 2600));
+      timer = window.setTimeout(show, rand(5000, 15000));
     };
 
-    timer = window.setTimeout(show, firstDelay);
+    timer = window.setTimeout(show, firstDelay + rand(0, 5000));
     return () => window.clearTimeout(timer);
-  }, [reduce, firstDelay]);
+  }, [firstDelay]);
 
   if (!spot) return null;
 
   // soft-edged circle that reveals only a small part of the image
-  const mask = `radial-gradient(circle ${spot.r}vmax at ${spot.x}% ${spot.y}%, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.35) 45%, transparent 100%)`;
+  const mask = `radial-gradient(circle ${GLIMMER_RADIUS}vmax at ${spot.x}% ${spot.y}%, rgba(0,0,0,1) 0%, rgba(0,0,0,0.65) 40%, transparent 100%)`;
 
   return (
     <motion.div
@@ -170,6 +186,7 @@ function GlimmerSpot({ src, firstDelay }: { src: string; firstDelay: number }) {
       className="glimmer"
       style={{
         backgroundImage: `url(${src})`,
+        backgroundPosition: `${spot.bx}% ${spot.by}%`,
         maskImage: mask,
         WebkitMaskImage: mask,
       }}
@@ -183,16 +200,16 @@ function GlimmerSpot({ src, firstDelay }: { src: string; firstDelay: number }) {
 function Glimmer({ src }: { src: string }) {
   return (
     <>
-      <GlimmerSpot src={src} firstDelay={400} />
-      <GlimmerSpot src={src} firstDelay={1500} />
-      <GlimmerSpot src={src} firstDelay={2700} />
+      <GlimmerSpot src={src} firstDelay={200} />
+      <GlimmerSpot src={src} firstDelay={1200} />
+      <GlimmerSpot src={src} firstDelay={3600} />
     </>
   );
 }
 
 // door timing (ms): doors close, photo swaps while shut, doors open again
-const CLOSE_MS = 700;
-const SWAP_AT_MS = 800;
+const CLOSE_MS = 1200;
+const SWAP_AT_MS = 1300;
 
 function App() {
   const reduce = useReducedMotion() ?? false;
@@ -235,6 +252,8 @@ function App() {
   return (
     <div className="container">
       <Glimmer src={GlimmerImg} />
+      {/* <img className="corner cornerTopRight" src={TopRight} alt="" /> */}
+      {/* <img className="corner cornerLeftBottom" src={LeftBottom} alt="" /> */}
       <img className="oasisLogo" src={Oasis} alt="Oasis '26" />
 
       {/* door frame, photo and the two sliding doors */}
@@ -242,11 +261,11 @@ function App() {
         <div className="opening">
           {!photoFailed && (
             <img
-              key={`photo-${photoIndex}`}
-              className="photo"
+              className={`photo${open ? " isOpen" : ""}`}
               src={shown.photo}
               alt={`${shown.first} ${shown.last}`}
               onError={() => setPhotoFailed(true)}
+              // style={{ zIndex: 999}}
             />
           )}
           <motion.img
