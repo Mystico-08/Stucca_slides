@@ -9,6 +9,8 @@ import DoorRight from "./assets/doorright.png";
 // import LeftBottom from "./assets/bottomleft1.png";
 import GlimmerImg from "./assets/glimmer.png"; // <- the image that shines through
 import Band from "./assets/band.png";
+import CornerOrnament from "./assets/cornerOrnament.png"; // top-left oriented corner
+import Mosque from "./assets/castle1.png";
 
 // Team photos (same files as the Contact page). Copy that folder to
 // src/assets/contact/ in this project, or change the paths below.
@@ -158,7 +160,7 @@ function GlimmerSpot({ src, firstDelay }: { src: string; firstDelay: number }) {
         id: n++,
         x: rand(6, 94),
         y: rand(6, 94),
-        dur: rand(3.5, 6), // slow fade in and out
+        dur: rand(2.5, 4), // slow fade in and out
         peak: rand(0.3, 0.65), // never fully bright
         bx: rand(0, 100),
         by: rand(0, 100),
@@ -168,7 +170,7 @@ function GlimmerSpot({ src, firstDelay }: { src: string; firstDelay: number }) {
     };
     const hide = () => {
       setSpot(null);
-      timer = window.setTimeout(show, rand(5000, 15000));
+      timer = window.setTimeout(show, rand(2000, 10000));
     };
 
     timer = window.setTimeout(show, firstDelay + rand(0, 5000));
@@ -200,10 +202,43 @@ function GlimmerSpot({ src, firstDelay }: { src: string; firstDelay: number }) {
 function Glimmer({ src }: { src: string }) {
   return (
     <>
-      <GlimmerSpot src={src} firstDelay={200} />
+       <GlimmerSpot src={src} firstDelay={200} />
+      <GlimmerSpot src={src} firstDelay={800} />
       <GlimmerSpot src={src} firstDelay={1200} />
+      <GlimmerSpot src={src} firstDelay={2000} />
       <GlimmerSpot src={src} firstDelay={3600} />
+      <GlimmerSpot src={src} firstDelay={4500} />
     </>
+  );
+}
+
+/* Screensaver / title page (key 0). Fades in and out as a whole. */
+function Screensaver() {
+  return (
+    <motion.div
+      className="saver"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.9, ease: "easeInOut" }}
+    >
+      <Glimmer src={GlimmerImg} />
+
+      <img className="saverLogo" src={Oasis} alt="Oasis '26" />
+
+      <div className="saverBanner">
+        <img className="bannerCorner tl" src={CornerOrnament} alt="" />
+        <img className="bannerCorner tr" src={CornerOrnament} alt="" />
+        <img className="bannerCorner bl" src={CornerOrnament} alt="" />
+        <img className="bannerCorner br" src={CornerOrnament} alt="" />
+        <h1 className="saverTitle">Oasis</h1>
+      </div>
+
+      <img className="saverMosque" src={Mosque} alt="" />
+
+      <div className="saverTint" />
+      <div className="saverTexture" />
+    </motion.div>
   );
 }
 
@@ -211,16 +246,27 @@ function Glimmer({ src }: { src: string }) {
 const CLOSE_MS = 1200;
 const SWAP_AT_MS = 1300;
 
+const MODIFIERS = ["Shift", "Control", "Alt", "Meta", "CapsLock", "Fn"];
+
 function App() {
   const reduce = useReducedMotion() ?? false;
   const [index, setIndex] = useState<number>(0); // who the text shows
   const [photoIndex, setPhotoIndex] = useState<number>(0); // who the door shows
   const [open, setOpen] = useState<boolean>(false);
   const [photoFailed, setPhotoFailed] = useState<boolean>(false);
+  const [saver, setSaver] = useState<boolean>(false); // key 0 = screensaver
 
-  // keys 1–8
+  // key 0 -> screensaver, keys 1–8 -> person, any other key -> hide screensaver
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (MODIFIERS.includes(e.key)) return;
+
+      if (e.key === "0") {
+        setSaver(true);
+        return;
+      }
+
+      setSaver(false);
       const n = parseInt(e.key, 10);
       if (n >= 1 && n <= PEOPLE.length) setIndex(n - 1);
     };
@@ -265,7 +311,6 @@ function App() {
               src={shown.photo}
               alt={`${shown.first} ${shown.last}`}
               onError={() => setPhotoFailed(true)}
-              // style={{ zIndex: 999}}
             />
           )}
           <motion.img
@@ -309,6 +354,9 @@ function App() {
           <Scatter id={index} text={p.dept} />
         </p>
       </div>
+
+      {/* screensaver on top of everything */}
+      <AnimatePresence>{saver && <Screensaver key="saver" />}</AnimatePresence>
     </div>
   );
 }
