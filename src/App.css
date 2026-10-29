@@ -1,0 +1,307 @@
+@font-face {
+  font-family: "Syamsiah Arabic";
+  src: url("./assets/Syamsiah Arabic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Yuzarsif";
+  src: url("./assets/Yuzarsif-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  width: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #350200;
+
+  background-image:
+    url("./assets/realbg.png"),
+    linear-gradient(to right, #AA7203 0%, #7A3A00 50%, #350200 100%);
+
+  background-position: center, center;
+  background-size: cover, cover;
+  background-repeat: no-repeat, no-repeat;
+  background-attachment: fixed, fixed;
+}
+
+/* gradient laid over every element (logo, door, photo, text) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(to right, #AA7203 0%, #7A3A00 50%, #350200 100%);
+  mix-blend-mode: soft-light;
+  opacity: 1; /* lower this (e.g. 0.5) for a softer tint */
+  pointer-events: none;
+  z-index: 9998;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url("./assets/overlay.png") repeat;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Oasis logo */
+.oasisLogo {
+  position: absolute;
+  top: -2%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 550px;
+  height: 210px;
+  object-fit: contain;
+  z-index: 1;
+}
+
+/* ---------- glimmer ----------
+   full-screen copy of the glimmer image, shown through a small moving mask */
+.glimmer {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* ---------- door ----------
+   Guidance image: door frame is ~285 x 353 px on a 992 x 558 slide,
+   i.e. width/height = 0.807, height = 63% of the slide, centred at
+   ~29% from the left and ~49% from the top. */
+.doorWrap {
+  position: absolute;
+  left: 29%;
+  top: 49%;
+  transform: translate(-50%, -50%);
+  height: 63vh;
+  aspect-ratio: 285 / 353;
+  z-index: 1;
+}
+
+.door {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* the opening inside the frame: photo at the back, two door leaves in front.
+   Leaves slide sideways and are clipped by the opening. */
+.opening {
+  position: absolute;
+  left: 9%;
+  top: 7%;
+  width: 82%;
+  height: 86%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.leaf {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 2;
+}
+
+.leafLeft {
+  left: 0;
+}
+
+.leafRight {
+  right: 0;
+}
+
+/* ---------- name + department ---------- */
+.info {
+  position: absolute;
+  left: 45%;
+  top: 19%;
+  width: 52%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 1;
+}
+
+.name {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Syamsiah Arabic", serif;
+  font-weight: 400;
+  line-height: 0.95;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  min-height: 16vw; /* keeps the layout steady while letters are away */
+  filter: drop-shadow(0 3px 2px rgba(53, 2, 0, 0.35));
+}
+
+.first,
+.last {
+  display: block;
+}
+
+/* each letter carries its own (vertical) gradient so it can fly around */
+.ch {
+  display: inline-block;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  will-change: transform, opacity, filter;
+}
+
+.word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* background-clip:text only paints inside the letter's box, so give each
+   letter breathing room (negative margin cancels it out for spacing) */
+.first .ch,
+.last .ch {
+  padding: 0.22em 0.18em;
+  margin: -0.22em -0.18em;
+}
+
+.first .ch {
+  background-image: linear-gradient(180deg, #a31c1c 0%, #5a0d0d 100%);
+}
+
+.last .ch {
+  background-image: linear-gradient(180deg, #7a2410 0%, #3a1608 100%);
+}
+
+/* department letters are plain solid colour */
+.dept .ch {
+  color: #3b3f47;
+  -webkit-text-fill-color: #3b3f47;
+  background: none;
+}
+
+/* band image between name and department */
+.band {
+  display: block;
+  width: 78%;
+  height: auto;
+  max-height: 6vh;
+  object-fit: contain;
+  margin: 2.4vh 0 3vh;
+}
+
+.dept {
+  margin: 0;
+  max-width: 62%;
+  font-family: "Yuzarsif", sans-serif;
+  font-weight: 400;
+  --dept-size: min(3.7vw, 7.6vh);
+  font-size: var(--dept-size);
+  line-height: 1.18;
+  min-height: calc(var(--dept-size) * 1.18 * 3);
+  text-transform: uppercase;
+  color: #3b3f47;
+}
+
+/* ---------- number buttons ---------- */
+.picker {
+  position: absolute;
+  bottom: 2.5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 3;
+}
+
+.picker button {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid #7a3a00;
+  background: rgba(255, 244, 220, 0.55);
+  color: #4a1a08;
+  font-family: "Yuzarsif", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.picker button.active {
+  background: #7a2410;
+  color: #fff4dc;
+}
+
+.picker button:focus-visible {
+  outline: 2px solid #350200;
+  outline-offset: 2px;
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* .doorWrap and .picker use transform for centring, so animate only children */
+@media (prefers-reduced-motion: reduce) {
+  .photo,
+  .info {
+    animation: none;
+  }
+}
