@@ -9,7 +9,7 @@ import DoorRight from "./assets/doorright.png";
 // import LeftBottom from "./assets/bottomleft1.png";
 import GlimmerImg from "./assets/glimmer.png"; // <- the image that shines through
 import Band from "./assets/band.png";
-import CornerOrnament from "./assets/cornerOrnament.png"; // top-left oriented corner
+import CornerOrnament from "./assets/cornerornament.png"; // top-left oriented corner
 import Mosque from "./assets/castle1.png";
 
 // Team photos (same files as the Contact page). Copy that folder to
