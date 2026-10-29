@@ -134,7 +134,7 @@ function Scatter({ id, text, className, style }: ScatterProps) {
 }
 
 // every shimmer uses this same radius (in vmax) so they all match
-const GLIMMER_RADIUS = 10;
+const GLIMMER_RADIUS = 12;
 
 type Spot = {
   id: number;
@@ -160,7 +160,7 @@ function GlimmerSpot({ src, firstDelay }: { src: string; firstDelay: number }) {
         id: n++,
         x: rand(6, 94),
         y: rand(6, 94),
-        dur: rand(2.5, 4), // slow fade in and out
+        dur: rand(3, 5), // slow fade in and out
         peak: rand(0.3, 0.65), // never fully bright
         bx: rand(0, 100),
         by: rand(0, 100),
