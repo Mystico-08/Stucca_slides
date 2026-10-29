@@ -14,7 +14,7 @@ import Band from "./assets/band.png";
 // src/assets/contact/ in this project, or change the paths below.
 import sneha from "/photos/snehaSrivastava1.jpeg";
 import avyakt from "/photos/avyaktVerma.webp";
-import praful from "/photos/prafulMalik.jpg";
+import praful from "/photos/prafulMalik.jpeg";
 import shreyas from "/photos/shreyasAnand.webp";
 import prithvi from "/photos/prithviGowda.webp";
 import devansh from "/photos/devanshAgarwal.jpg";
@@ -33,7 +33,7 @@ type Person = {
 const PEOPLE: Person[] = [
   { first: "Sneha", last: "Srivastava", dept: "Department of Publication and Correspondence", photo: sneha },
   { first: "Avyakt", last: "Verma", dept: "Department of Visual Media", photo: avyakt },
-  { first: "Praful", last: "Malik", dept: "Department of Sponsorships and Company Collaborations", photo: praful },
+  { first: "Praful", last: "Malik", dept: "Department of Sponsorships", photo: praful },
   { first: "Shreyas", last: "Anand", dept: "Department of Controls", photo: shreyas },
   { first: "Prithvi", last: "Gowda C", dept: "Department of Reception and Accommodation", photo: prithvi },
   { first: "Devansh", last: "Agarwal", dept: "Department of Art, Design and Publicity", photo: devansh },

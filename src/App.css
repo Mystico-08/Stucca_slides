@@ -279,6 +279,7 @@ body::after {
   max-height: 6vh;
   object-fit: contain;
   margin: 2.4vh 0 3vh;
+  opacity:0.3;
 }
 
 .dept {
