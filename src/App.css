@@ -284,10 +284,10 @@ body::after {
 
 .dept {
   margin: 0;
-  max-width: 62%;
+  max-width: 75%;
   font-family: "Yuzarsif", sans-serif;
   font-weight: 400;
-  --dept-size: min(3.7vw, 7.6vh);
+  --dept-size: min(4.6vw, 9vh); /* was min(3.7vw, 7.6vh) */
   font-size: var(--dept-size);
   line-height: 1.18;
   min-height: calc(var(--dept-size) * 1.18 * 3);
